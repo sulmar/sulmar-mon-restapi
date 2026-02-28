@@ -1,0 +1,34 @@
+@host = https://localhost:5001
+@orderId = 00000000-0000-0000-0000-000000000000
+
+### Try to add item after Placed (409)
+POST {{host}}/orders/{{orderId}}/items
+Content-Type: application/json
+
+{
+  "productId": "33333333-3333-3333-3333-333333333333",
+  "quantity": 1,
+  "unitPrice": 50
+}
+
+###
+
+### Invalid quantity (422)
+POST {{host}}/orders/{{orderId}}/items
+Content-Type: application/json
+
+{
+  "productId": "33333333-3333-3333-3333-333333333333",
+  "quantity": 0,
+  "unitPrice": 50
+}
+
+###
+
+### Invalid state transition (409)
+PATCH {{host}}/orders/{{orderId}}
+Content-Type: application/json
+
+{
+  "status": "Draft"
+}

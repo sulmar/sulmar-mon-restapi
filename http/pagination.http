@@ -1,0 +1,9 @@
+@host = https://localhost:5001
+
+### First page
+GET {{host}}/orders?page=1&pageSize=10
+
+###
+
+### Filter by status
+GET {{host}}/orders?status=Placed

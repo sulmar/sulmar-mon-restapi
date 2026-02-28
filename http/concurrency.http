@@ -1,0 +1,28 @@
+@host = https://localhost:5001
+@orderId = 00000000-0000-0000-0000-000000000000
+@version = 1
+
+### Get order (check ETag in response)
+GET {{host}}/orders/{{orderId}}
+
+###
+
+### Update with correct version
+PATCH {{host}}/orders/{{orderId}}
+Content-Type: application/json
+If-Match: "{{version}}"
+
+{
+  "status": "Cancelled"
+}
+
+###
+
+### Update with wrong version (412)
+PATCH {{host}}/orders/{{orderId}}
+Content-Type: application/json
+If-Match: "999"
+
+{
+  "status": "Cancelled"
+}
