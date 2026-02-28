@@ -140,6 +140,5 @@ Jego celem jest pokazanie poprawnego modelowania REST API, a nie dostarczenie go
 ---
 
 # 👨‍🏫 Autor szkolenia
-
-Szkolenie: Tworzenie usług REST API w .NET 9  
+Marcin Sulecki
 Tematyka: REST, HTTP, architektura, projektowanie API
