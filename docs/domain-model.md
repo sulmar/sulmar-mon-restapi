@@ -70,21 +70,7 @@ public enum OrderStatus
 
 # 4. Cykl życia zamówienia
 
-Dozwolone przejścia:
-
-```
-Draft → Placed  
-Placed → Paid  
-Paid → Shipped  
-Draft → Cancelled  
-Placed → Cancelled  
-```
-
-Stany końcowe:
-- Shipped
-- Cancelled
-
-Niedozwolone przejścia powinny skutkować wyjątkiem domenowym.
+Diagram stanów
 
 ```mermaid
 stateDiagram-v2
@@ -100,6 +86,23 @@ stateDiagram-v2
     Shipped --> [*]
     Cancelled --> [*]
 ```
+
+
+Dozwolone przejścia:
+
+```
+Draft → Placed  
+Placed → Paid  
+Paid → Shipped  
+Draft → Cancelled  
+Placed → Cancelled  
+```
+
+Stany końcowe:
+- Shipped
+- Cancelled
+
+Niedozwolone przejścia powinny skutkować wyjątkiem domenowym.
 
 ---
 

@@ -225,6 +225,27 @@ Odpowiedzi:
 
 ---
 
+## 5.8 Lista zamówień wybranego klienta
+
+GET /customers/{id}/orders?status=Placed
+
+Request:
+
+(brak body)
+
+Odpowiedzi:
+
+- 200 OK
+- 404 Not Found (klient nie istnieje)
+
+Uwagi:
+
+- Endpoint jest aliasem dla: GET /orders?customerId={id}&status=Placed
+- Parametr status jest opcjonalny.
+- Jeśli klient istnieje, ale nie ma zamówień → 200 OK z pustą listą [].
+
+---
+
 # 6. Kontrola współbieżności (ETag)
 
 Odpowiedź GET zawiera nagłówek:
