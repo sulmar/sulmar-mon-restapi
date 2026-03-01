@@ -86,6 +86,21 @@ Stany końcowe:
 
 Niedozwolone przejścia powinny skutkować wyjątkiem domenowym.
 
+```mermaid
+stateDiagram-v2
+    [*] --> Draft
+
+    Draft --> Placed
+    Placed --> Paid
+    Paid --> Shipped
+
+    Draft --> Cancelled
+    Placed --> Cancelled
+
+    Shipped --> [*]
+    Cancelled --> [*]
+```
+
 ---
 
 # 5. OrderItem
