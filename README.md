@@ -129,6 +129,30 @@ lub
 dotnet run –project src/OrderApi.Minimal
 ```
 
+---
+
+# 🏷 Wracanie do wersji z tagiem
+
+Repozytorium jest oznaczane tagami w kluczowych etapach (np. `day-01-podstawy-rest-api`). Aby wrócić do stanu kodu z danego commita/tagu:
+
+**Tylko podejrzeć pliki (bez zmiany gałęzi):**
+```bash
+git checkout day-01-podstawy-rest-api
+```
+To przełączy HEAD na ten commit (tzw. „detached HEAD”). Żeby wrócić na `main`:
+```bash
+git checkout main
+```
+
+**Stworzyć gałąź od danej wersji i na niej pracować:**
+```bash
+git checkout -b moja-gałąź day-01-podstawy-rest-api
+```
+
+**Lista tagów:**
+```bash
+git tag -l
+```
 
 ---
 
