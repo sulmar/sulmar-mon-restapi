@@ -13,11 +13,45 @@ Projekt został przygotowany jako materiał szkoleniowy do kursu:
 ```
 src/
 │
-├── OrderApi.Minimal/        → Implementacja Minimal API
-├── OrderApi.Mvc/            → Implementacja MVC
 ├── OrderApi.Domain/         → Model domenowy (reguły biznesowe)
-├── OrderApi.Application/    → Warstwa przypadków użycia (opcjonalnie)
-└── OrderApi.Infrastructure/ → Repozytoria i integracje
+├── OrderApi.Application/    → Warstwa przypadków użycia (kontrakty, DTO)
+├── OrderApi.Infrastructure/ → Repozytoria i integracje
+└── OrderApi.Minimal/        → Host HTTP (Minimal API)
+```
+
+W bieżącym repozytorium hostem jest wyłącznie **OrderApi.Minimal**; projekt OrderApi.Mvc nie jest uwzględniony.
+
+---
+
+# Projekty i warstwy
+
+| Projekt | Typ | Rola | Główne elementy |
+|--------|-----|------|------------------|
+| **OrderApi.Domain** | Biblioteka | Model domenowy, reguły biznesowe, brak zależności od innych warstw | `Order`, `OrderItem`, `OrderStatus`, przejścia stanów, wyjątki domenowe |
+| **OrderApi.Application** | Biblioteka | Kontrakty aplikacyjne: repozytoria, DTO, interfejsy przypadków użycia | `IOrderRepository`, `CreateOrderRequest`, `UpdateOrderStatusRequest` |
+| **OrderApi.Infrastructure** | Biblioteka | Implementacja persystencji i integracji zewnętrznych | `InMemoryOrderRepository` (implementacja `IOrderRepository`) |
+| **OrderApi.Minimal** | Aplikacja webowa | Host HTTP – Minimal API, kompozycja warstw, endpointy REST | `Program.cs`, rejestracja DI, mapowanie HTTP na Application/Domain |
+
+---
+
+# Relacje między projektami
+
+- **OrderApi.Domain** – bez zależności od innych projektów (warstwa bazowa).
+- **OrderApi.Application** – zależy tylko od **OrderApi.Domain** (używa encji domenowych w kontraktach).
+- **OrderApi.Infrastructure** – zależy od **OrderApi.Application** (implementuje interfejsy z Application, np. `IOrderRepository`).
+- **OrderApi.Minimal** – host łączy wszystkie warstwy: używa Application (kontrakty, DTO), Domain (encje, logika), Infrastructure (konkretne repozytorium).
+
+```mermaid
+flowchart LR
+  Domain[OrderApi.Domain]
+  Application[OrderApi.Application]
+  Infrastructure[OrderApi.Infrastructure]
+  Minimal[OrderApi.Minimal]
+  Application --> Domain
+  Infrastructure --> Application
+  Minimal --> Application
+  Minimal --> Domain
+  Minimal --> Infrastructure
 ```
 
 ---
@@ -28,7 +62,7 @@ src/
 - Logika biznesowa znajduje się w modelu domenowym
 - Warstwa HTTP mapuje wyjątki domenowe na statusy HTTP
 - Repozytorium abstrahuje warstwę przechowywania danych
-- Minimal API i MVC implementują ten sam kontrakt
+- Minimal API (i ewentualnie MVC) implementują ten sam kontrakt
 
 ---
 
@@ -42,19 +76,21 @@ Zawiera:
 - `OrderItem`
 - `OrderStatus`
 - wyjątki domenowe
-- reguły biznesowe
+- reguły biznesowe (np. dozwolone przejścia stanów)
+
+Zależności: brak (żadnego innego projektu z `src/`).
 
 ---
 
-## Minimal / MVC
+## Application
 
-Odpowiadają za:
+Odpowiada za:
 
-- mapowanie endpointów
-- obsługę żądań HTTP
-- walidację wejścia
-- mapowanie wyjątków domenowych na HTTP
-- obsługę ETag
+- kontrakty repozytoriów (np. `IOrderRepository`)
+- DTO żądań i odpowiedzi (`CreateOrderRequest`, `UpdateOrderStatusRequest`)
+- interfejsy przypadków użycia – warstwa orkiestracji między HTTP a domeną
+
+Zależności: tylko **OrderApi.Domain**.
 
 ---
 
@@ -62,9 +98,24 @@ Odpowiadają za:
 
 Zawiera:
 
-- implementacje repozytoriów
-- integracje z bazą danych
+- implementacje repozytoriów (np. `InMemoryOrderRepository`)
+- integracje z bazą danych lub innymi systemami zewnętrznymi
 
+Zależności: **OrderApi.Application** (oraz transitowo Domain).
+
+---
+
+## Minimal (host HTTP)
+
+W tym repozytorium jedyny host to **OrderApi.Minimal**. Odpowiada za:
+
+- mapowanie endpointów HTTP na operacje aplikacyjne
+- obsługę żądań i odpowiedzi HTTP
+- walidację wejścia
+- mapowanie wyjątków domenowych na statusy HTTP (np. 409, 422)
+- obsługę ETag (optymistyczna współbieżność)
+
+Host nie zawiera logiki biznesowej – korzysta z Application i Domain; konkretna implementacja persystencji jest wstrzykiwana z Infrastructure.
 
 ---
 
@@ -75,11 +126,3 @@ Z poziomu katalogu głównego projektu:
 ```bash
 dotnet run --project src/OrderApi.Minimal
 ```
-
-lub
-
-```bash
-dotnet run --project src/OrderApi.Mvc
-```
-
-
