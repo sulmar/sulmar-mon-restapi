@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderApi.Application", "src
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderApi.Infrastructure", "src\OrderApi.Infrastructure\OrderApi.Infrastructure.csproj", "{79F526BD-105F-473A-8C33-2E42204809E6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderApi.Minimal", "src\OrderApi.Minimal\OrderApi.Minimal.csproj", "{4FA913D1-3229-4AA7-AA3F-EF26E29FB78D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{79F526BD-105F-473A-8C33-2E42204809E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{79F526BD-105F-473A-8C33-2E42204809E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{79F526BD-105F-473A-8C33-2E42204809E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FA913D1-3229-4AA7-AA3F-EF26E29FB78D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FA913D1-3229-4AA7-AA3F-EF26E29FB78D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FA913D1-3229-4AA7-AA3F-EF26E29FB78D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FA913D1-3229-4AA7-AA3F-EF26E29FB78D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -37,5 +43,6 @@ Global
 		{F22007B1-C69B-4030-AA3E-D7BA8C63DD81} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{B915439C-4877-4F93-A643-5F51194E8D67} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{79F526BD-105F-473A-8C33-2E42204809E6} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{4FA913D1-3229-4AA7-AA3F-EF26E29FB78D} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 	EndGlobalSection
 EndGlobal

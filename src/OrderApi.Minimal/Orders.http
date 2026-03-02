@@ -1,0 +1,45 @@
+
+@host = https://localhost:5000
+@orderId = 4a674273-4b9a-4bcd-8892-2c339dc9a41f
+
+@customerId = 8145d0b5-17e9-4fa4-a1bb-6207642b946b
+
+### Pobierz zamowienia
+GET {{host}}/orders
+
+### Pobierz zamowienie
+GET {{host}}/orders/{{orderId}}
+
+### Pobierz nieistniejace zamowienie
+GET {{host}}/orders/00000000-0000-0000-0000-000000000000
+
+### Dodaj zamowienie
+POST {{host}}/orders
+Content-Type: application/json
+
+{
+  "CustomerId":"{{customerId}}"
+}
+
+### Dodaj bledne zamowienie
+POST {{host}}/orders
+Content-Type: application/json
+
+{
+  "CustomerId":"00000000-0000-0000-0000-000000000000"
+}
+
+### Zmiana statusu zamowienia
+PATCH {{host}}/orders/{{orderId}}
+Content-Type: application/json
+
+{
+  "Status": "Placed"
+}
+
+
+
+
+### Usuniecie zamowienia
+DELETE {{host}}/orders/{{orderId}}
+
