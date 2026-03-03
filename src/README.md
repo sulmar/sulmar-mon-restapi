@@ -21,6 +21,8 @@ src/
 
 W bieżącym repozytorium hostem jest wyłącznie **OrderApi.Minimal**; projekt OrderApi.Mvc nie jest uwzględniony.
 
+Projekty testów jednostkowych znajdują się w katalogu **`tests/`** w głównym katalogu repozytorium (poza `src/`).
+
 ---
 
 # Projekty i warstwy
@@ -72,11 +74,11 @@ flowchart LR
 
 Zawiera:
 
-- agregat `Order`
+- agregat `Order` (fabryka `Order.Create`, `AddItem`, `TransitionTo`, `Version`, `Total`)
 - `OrderItem`
 - `OrderStatus`
 - wyjątki domenowe
-- reguły biznesowe (np. dozwolone przejścia stanów)
+- reguły biznesowe (np. dozwolone przejścia stanów: Draft → Placed → Paid, anulowanie)
 
 Zależności: brak (żadnego innego projektu z `src/`).
 
@@ -116,6 +118,23 @@ W tym repozytorium jedyny host to **OrderApi.Minimal**. Odpowiada za:
 - obsługę ETag (optymistyczna współbieżność)
 
 Host nie zawiera logiki biznesowej – korzysta z Application i Domain; konkretna implementacja persystencji jest wstrzykiwana z Infrastructure.
+
+---
+
+# Testy jednostkowe
+
+W katalogu **`tests/`** (w głównym katalogu repozytorium) znajdują się:
+
+| Projekt | Zależności | Opis |
+|--------|------------|------|
+| **OrderApi.Domain.UnitTests** | OrderApi.Domain | Testy encji i logiki domenowej (`Order.Create`, `AddItem`, `TransitionTo`, walidacje) |
+| **OrderApi.Application.UnitTests** | OrderApi.Application | Testy handlerów przypadków użycia (np. `CreateOrderHandler`) z fikcyjnym repozytorium |
+
+Uruchomienie testów z katalogu głównego:
+
+```bash
+dotnet test
+```
 
 ---
 
