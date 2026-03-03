@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using OrderApi.Application.Contracts;
 using OrderApi.Application.DTOs;
+using OrderApi.Application.UseCases;
 using OrderApi.Domain;
 using OrderApi.Infrastructure.Repositories;
 using OrderApi.Minimal.Endpoints;
@@ -18,6 +19,9 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 });
 
 builder.Services.AddSingleton<IOrderRepository, InMemoryOrderRepository>();
+
+builder.Services.AddScoped<CreateOrderHandler>();
+builder.Services.AddScoped<GetOrderHandler>();
 
 var app = builder.Build();
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OrderApi.Application.Contracts;
 using OrderApi.Application.DTOs;
+using OrderApi.Application.UseCases;
 using OrderApi.Domain;
 
 namespace OrderApi.Minimal.Endpoints;
@@ -14,16 +15,16 @@ public static class OrderApiEndpoints
         var orders = app.MapGroup("/orders");
 
         orders.MapGet("", async (IOrderRepository repository) => await repository.GetListAsync());
-        orders.MapGet("{id:guid}", async (Guid id, IOrderRepository repository) =>
+        orders.MapGet("{id:guid}", async (Guid id, GetOrderHandler handler) =>
         {
-            var order = await repository.GetByIdAsync(id);
+            var order = await handler.HandleAsync(id);
 
             if (order is null)
                 return Results.NotFound();
 
             return Results.Ok(order);
         });
-        orders.MapPost("", async (CreateOrderRequest request, IOrderRepository repository) =>
+        orders.MapPost("", async (CreateOrderRequest request, CreateOrderHandler handler) =>
         {
             if (request.CustomerId == Guid.Empty)
                 return Results.ValidationProblem(new Dictionary<string, string[]>
@@ -31,9 +32,7 @@ public static class OrderApiEndpoints
                     ["CustomerId"] = ["Customer ID is required"],
                 });
 
-            var order = Order.Create(Guid.NewGuid(), request.CustomerId);
-
-            await repository.AddAsync(order);
+            var order = await handler.HandleAsync(request);
 
             return Results.Created($"/orders/{order.Id}", order);
         });
