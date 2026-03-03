@@ -27,6 +27,13 @@ public class Order
 
     private Order(Guid id, Guid customerId, DateTime createdAt)
     {
+        if (id == Guid.Empty)
+            throw new ArgumentException(nameof(id));
+
+        if (customerId==Guid.Empty)
+            throw new ArgumentException(nameof(customerId));
+
+
         Id = id;
         CustomerId = customerId;
         CreatedAt = createdAt;
@@ -42,14 +49,22 @@ public class Order
 
     public void AddItem(Guid productId, int quantity, decimal unitPrice)
     {
-        // TODO: Dodaj walidacje
-        if (Status != OrderStatus.Draft) 
+        if (Status != OrderStatus.Draft)
             throw new InvalidStateTransitionException(Status, OrderStatus.Draft);
 
-        _items.Add(new OrderItem {  
-            ProductId = productId, 
-            Quantity = quantity, 
-            UnitPrice = unitPrice });
+        _items.Add(new OrderItem
+        {
+            ProductId = productId,
+            Quantity = quantity,
+            UnitPrice = unitPrice
+        });
+
+        IncrementVersion();
+    }
+
+    private void IncrementVersion()
+    {
+        Version++;
     }
 
     private void Place()
