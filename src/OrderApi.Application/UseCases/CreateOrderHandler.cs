@@ -22,7 +22,7 @@ public class CreateOrderHandler
     {
         var order = Order.Create(Guid.NewGuid(), request.CustomerId);
 
-        await _repository.AddAsync(order);
+       await _repository.AddAsync(order);
 
         return order;
     }
