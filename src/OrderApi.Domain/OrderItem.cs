@@ -10,8 +10,8 @@
 
 public class OrderItem
 {
-    public Guid ProductId { get; set; }
-    public int Quantity { get; set; }
-    public decimal UnitPrice { get; set; }
+    public required Guid ProductId { get; set; }
+    public required int Quantity { get; set; }
+    public required decimal UnitPrice { get; set; }
     public decimal LineTotal => Quantity * UnitPrice;
 }

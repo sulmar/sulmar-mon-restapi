@@ -1,4 +1,6 @@
-﻿namespace OrderApi.Domain;
+﻿using OrderApi.Domain.Exceptions;
+
+namespace OrderApi.Domain;
 
 /*
 Order
@@ -18,7 +20,9 @@ public class Order
     public DateTime CreatedAt { get; set; }
     public OrderStatus Status { get; private set; }
     public int Version { get; set; }
-    public IReadOnlyList<OrderItem> Items { get; set; } = [];
+
+    private List<OrderItem> _items = [];
+    public IReadOnlyList<OrderItem> Items => _items;
     public decimal Total => Items.Sum(i => i.LineTotal);
 
     private Order(Guid id, Guid customerId, DateTime createdAt)
@@ -36,11 +40,23 @@ public class Order
         return new Order(id, customerId, DateTime.Now);
     }
 
+    public void AddItem(Guid productId, int quantity, decimal unitPrice)
+    {
+        // TODO: Dodaj walidacje
+        if (Status != OrderStatus.Draft) 
+            throw new InvalidStateTransitionException(Status, OrderStatus.Draft);
+
+        _items.Add(new OrderItem {  
+            ProductId = productId, 
+            Quantity = quantity, 
+            UnitPrice = unitPrice });
+    }
+
     private void Place()
     {
         if (Status != OrderStatus.Draft)
         {
-            throw new InvalidOperationException();
+            throw new InvalidStateTransitionException(Status, OrderStatus.Placed);
         }
 
         Status = OrderStatus.Placed;
@@ -75,7 +91,7 @@ public class Order
             case OrderStatus.Paid: Pay(); break;
             case OrderStatus.Cancelled: Cancel(); break;
 
-            default: throw new InvalidOperationException();
+            default: throw new InvalidStateTransitionException($"Uknown target status: {targetStatus}");
         }
     }
 
