@@ -7,7 +7,9 @@ using OrderApi.Domain;
 using OrderApi.Infrastructure.Repositories;
 using OrderApi.Infrastructure.Services;
 using OrderApi.Minimal.Endpoints;
+using OrderApi.Minimal.Middlewares;
 using OrderApi.Minimal.ProblemDetails;
+using System.Diagnostics;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,6 +37,12 @@ app.ConfigureExceptionHandler();
 
 var connectionString = app.Configuration["ConnectionStrings:OrderConnection"];
 
+app.UseLogger();
+app.UseStopwatch();
+
 app.MapOrderApiEndpoints();
 
 app.Run();
+
+// HACK
+public partial class Program { }
