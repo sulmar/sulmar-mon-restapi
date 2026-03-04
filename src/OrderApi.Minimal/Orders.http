@@ -16,6 +16,7 @@ GET {{host}}/orders/00000000-0000-0000-0000-000000000000
 ### Dodaj zamowienie
 POST {{host}}/orders
 Content-Type: application/json
+X-Secret-Key: 123
 
 {
   "CustomerId":"{{customerId}}"
