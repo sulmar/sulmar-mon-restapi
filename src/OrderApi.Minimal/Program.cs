@@ -5,6 +5,7 @@ using OrderApi.Application.DTOs;
 using OrderApi.Application.UseCases;
 using OrderApi.Domain;
 using OrderApi.Infrastructure.Repositories;
+using OrderApi.Infrastructure.Services;
 using OrderApi.Minimal.Endpoints;
 using OrderApi.Minimal.ProblemDetails;
 using System.Text.Json.Serialization;
@@ -22,6 +23,11 @@ builder.Services.AddSingleton<IOrderRepository, InMemoryOrderRepository>();
 
 builder.Services.AddScoped<CreateOrderHandler>();
 builder.Services.AddScoped<GetOrderHandler>();
+
+builder.Services.AddServiceDiscovery();
+builder.Services.AddHttpClient<ICurrencyRateService, NbpApiCurrencyRateService>(
+    client => client.BaseAddress = new Uri("https://nbp-api"))
+    .AddServiceDiscovery();
 
 var app = builder.Build();
 
