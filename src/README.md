@@ -21,7 +21,7 @@ src/
 
 W bieżącym repozytorium hostem jest wyłącznie **OrderApi.Minimal**; projekt OrderApi.Mvc nie jest uwzględniony.
 
-Projekty testów jednostkowych znajdują się w katalogu **`tests/`** w głównym katalogu repozytorium (poza `src/`).
+Projekty testów znajdują się w katalogu **`tests/`** w głównym katalogu repozytorium (poza `src/`).
 
 ---
 
@@ -30,9 +30,9 @@ Projekty testów jednostkowych znajdują się w katalogu **`tests/`** w główny
 | Projekt | Typ | Rola | Główne elementy |
 |--------|-----|------|------------------|
 | **OrderApi.Domain** | Biblioteka | Model domenowy, reguły biznesowe, brak zależności od innych warstw | `Order`, `OrderItem`, `OrderStatus`, przejścia stanów, wyjątki domenowe |
-| **OrderApi.Application** | Biblioteka | Kontrakty aplikacyjne: repozytoria, DTO, interfejsy przypadków użycia | `IOrderRepository`, `CreateOrderRequest`, `UpdateOrderStatusRequest` |
-| **OrderApi.Infrastructure** | Biblioteka | Implementacja persystencji i integracji zewnętrznych | `InMemoryOrderRepository` (implementacja `IOrderRepository`) |
-| **OrderApi.Minimal** | Aplikacja webowa | Host HTTP – Minimal API, kompozycja warstw, endpointy REST | `Program.cs`, rejestracja DI, mapowanie HTTP na Application/Domain |
+| **OrderApi.Application** | Biblioteka | Kontrakty aplikacyjne: repozytoria, DTO, interfejsy przypadków użycia | `IOrderRepository`, `ICurrencyRateService`, `CreateOrderRequest`, `UpdateOrderStatusRequest`, `CreateOrderHandler`, `GetOrderHandler` |
+| **OrderApi.Infrastructure** | Biblioteka | Implementacja persystencji i integracji zewnętrznych | `Repositories/InMemoryOrderRepository` (implementacja `IOrderRepository`), `NbpApiCurrencyRateService` (implementacja `ICurrencyRateService`) |
+| **OrderApi.Minimal** | Aplikacja webowa | Host HTTP – Minimal API, kompozycja warstw, endpointy REST | `Program.cs`, `Endpoints/OrderApiEndpoints`, rejestracja DI, `ConfigureExceptionHandler` / ProblemDetails, middlewares (`LoggerMiddleware`, `StopwatchMiddleware`) |
 
 ---
 
@@ -88,9 +88,9 @@ Zależności: brak (żadnego innego projektu z `src/`).
 
 Odpowiada za:
 
-- kontrakty repozytoriów (np. `IOrderRepository`)
+- kontrakty repozytoriów (np. `IOrderRepository`) oraz serwisów zewnętrznych (np. `ICurrencyRateService`)
 - DTO żądań i odpowiedzi (`CreateOrderRequest`, `UpdateOrderStatusRequest`)
-- interfejsy przypadków użycia – warstwa orkiestracji między HTTP a domeną
+- handlery przypadków użycia (`CreateOrderHandler`, `GetOrderHandler`) – warstwa orkiestracji między HTTP a domeną
 
 Zależności: tylko **OrderApi.Domain**.
 
@@ -100,7 +100,8 @@ Zależności: tylko **OrderApi.Domain**.
 
 Zawiera:
 
-- implementacje repozytoriów (np. `InMemoryOrderRepository`)
+- implementacje repozytoriów (np. `Repositories/InMemoryOrderRepository`)
+- implementację serwisu kursów walut (`NbpApiCurrencyRateService` – integracja z NBP API)
 - integracje z bazą danych lub innymi systemami zewnętrznymi
 
 Zależności: **OrderApi.Application** (oraz transitowo Domain).
@@ -111,17 +112,18 @@ Zależności: **OrderApi.Application** (oraz transitowo Domain).
 
 W tym repozytorium jedyny host to **OrderApi.Minimal**. Odpowiada za:
 
-- mapowanie endpointów HTTP na operacje aplikacyjne
+- mapowanie endpointów HTTP na operacje aplikacyjne (`Endpoints/OrderApiEndpoints.cs`)
 - obsługę żądań i odpowiedzi HTTP
 - walidację wejścia
-- mapowanie wyjątków domenowych na statusy HTTP (np. 409, 422)
+- globalną obsługę wyjątków (`ConfigureExceptionHandler`, ProblemDetails) – mapowanie wyjątków domenowych na statusy HTTP (np. 409, 422)
 - obsługę ETag (optymistyczna współbieżność)
+- middlewares (np. logowanie – `LoggerMiddleware`, pomiar czasu – `StopwatchMiddleware`)
 
 Host nie zawiera logiki biznesowej – korzysta z Application i Domain; konkretna implementacja persystencji jest wstrzykiwana z Infrastructure.
 
 ---
 
-# Testy jednostkowe
+# Testy
 
 W katalogu **`tests/`** (w głównym katalogu repozytorium) znajdują się:
 
@@ -129,6 +131,7 @@ W katalogu **`tests/`** (w głównym katalogu repozytorium) znajdują się:
 |--------|------------|------|
 | **OrderApi.Domain.UnitTests** | OrderApi.Domain | Testy encji i logiki domenowej (`Order.Create`, `AddItem`, `TransitionTo`, walidacje) |
 | **OrderApi.Application.UnitTests** | OrderApi.Application | Testy handlerów przypadków użycia (np. `CreateOrderHandler`) z fikcyjnym repozytorium |
+| **OrderApi.IntegrationTests** | OrderApi.Minimal | Testy API na poziomie HTTP (endpointy, statusy, kontrakt) |
 
 Uruchomienie testów z katalogu głównego:
 
