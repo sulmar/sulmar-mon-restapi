@@ -1,0 +1,7 @@
+# For more info on HTTP files go to https://aka.ms/vs/httpfile
+@host = https://localhost:7237
+@productId = c77cf2e3-1076-4f5d-b6e3-bb4144b5c465
+
+POST {{host}}/products/{{productId}}/reservations
+Authorization: Bearer abc123
+
