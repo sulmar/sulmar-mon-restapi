@@ -4,7 +4,7 @@ using OrderApi.Domain;
 
 namespace OrderApi.Application.UseCases;
 
-public class UpdateOrderStatusHandler(IOrderRepository repository)
+public class UpdateOrderStatusHandler(IOrderRepository repository, IOrderStatusNotifier notifier)
 {
     public async Task HandleAsync(Guid id, OrderStatus targetStatus)
     {
@@ -16,5 +16,7 @@ public class UpdateOrderStatusHandler(IOrderRepository repository)
         order.TransitionTo(targetStatus);
 
         await repository.UpdateAsync(order);
+
+        await notifier.NotifyStatusChangedAsync(id, order.Status, order.Version);
     }
 }
