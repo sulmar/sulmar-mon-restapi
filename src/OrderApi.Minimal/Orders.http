@@ -1,6 +1,6 @@
 
 @host = https://localhost:5000
-@orderId = 9e76f9fc-f747-4a7b-a5fd-26962910e791
+@orderId = c77cf2e3-1076-4f5d-b6e3-bb4144b5c465
 
 @customerId = 8145d0b5-17e9-4fa4-a1bb-6207642b946b
 
@@ -17,6 +17,7 @@ GET {{host}}/orders/00000000-0000-0000-0000-000000000000
 POST {{host}}/orders
 Content-Type: application/json
 X-Secret-Key: 123
+Authorization: Bearer abc123
 
 {
   "CustomerId":"{{customerId}}"
@@ -38,6 +39,13 @@ Content-Type: application/json
   "Status": "Placed"
 }
 
+### Zmiana statusu zamowienia na Paid
+PATCH {{host}}/orders/{{orderId}}
+Content-Type: application/json
+
+{
+  "Status": "Paid"
+}
 
 
 
