@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using OrderApi.Application.Exceptions;
 using OrderApi.Domain.Exceptions;
 using System.Net;
 using System.Text.Json;
@@ -30,7 +31,7 @@ public static class ProblemDetailsHandler
                     {
                         Type = "http://localhost:5000/problems/invalid-state-transition",
                         Title = "Invalid state transition",
-                        Status = (int) HttpStatusCode.Conflict,
+                        Status = (int)HttpStatusCode.Conflict,
                         Detail = ex.Message,
                         Instance = context.Request.Path
                     }),
@@ -44,7 +45,16 @@ public static class ProblemDetailsHandler
                         Instance = context.Request.Path
                     }),
 
-                    _  => (HttpStatusCode.InternalServerError, new Microsoft.AspNetCore.Mvc.ProblemDetails
+                    OrderNotFoundException ex => (HttpStatusCode.NotFound, new Microsoft.AspNetCore.Mvc.ProblemDetails
+                    {
+                        Type = "http://localhost:5000/problems/order-not-found",
+                        Title = "Order not found",
+                        Status = (int)HttpStatusCode.NotFound,
+                        Detail = ex.Message,
+                        Instance = context.Request.Path
+                    }),
+
+                    _ => (HttpStatusCode.InternalServerError, new Microsoft.AspNetCore.Mvc.ProblemDetails
                     {
                         Type = "http://localhost:5000/problems/internal-error",
                         Title = "An unexpected error ocurred",

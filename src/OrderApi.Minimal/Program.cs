@@ -25,6 +25,7 @@ builder.Services.AddSingleton<IOrderRepository, InMemoryOrderRepository>();
 
 builder.Services.AddScoped<CreateOrderHandler>();
 builder.Services.AddScoped<GetOrderHandler>();
+builder.Services.AddScoped<UpdateOrderStatusHandler>();
 
 builder.Services.AddServiceDiscovery();
 builder.Services.AddHttpClient<ICurrencyRateService, NbpApiCurrencyRateService>(

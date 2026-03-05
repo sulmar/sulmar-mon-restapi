@@ -37,16 +37,10 @@ public static class OrderApiEndpoints
             return Results.Created($"/orders/{order.Id}", order);
         });
 
-        orders.MapPatch("{id:guid}", async (Guid id, [FromBody] UpdateOrderStatusRequest request, IOrderRepository repository) =>
+        orders.MapPatch("{id:guid}", async (Guid id, [FromBody] UpdateOrderStatusRequest request,
+            UpdateOrderStatusHandler handler) =>
         {
-            var order = await repository.GetByIdAsync(id);
-
-            if (order is null)
-                return Results.NotFound();
-
-            order.TransitionTo(request.Status);
-
-            await repository.UpdateAsync(order);
+            await handler.HandleAsync(id, request.Status);
 
             return Results.NoContent();
 
