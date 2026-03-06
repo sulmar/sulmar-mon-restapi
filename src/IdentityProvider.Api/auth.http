@@ -1,0 +1,33 @@
+# For more info on HTTP files go to https://aka.ms/vs/httpfile
+@host = https://localhost:7262
+@username = johny
+@password = 123
+
+
+### Prawidlowy login i haslo
+POST {{host}}/login
+Content-Type: application/json
+
+{
+  "username":"{{username}}",
+  "password":"{{password}}"
+}
+
+### Nieprawidlowy login 
+POST {{host}}/login
+Content-Type: application/json
+
+{
+  "username":"invalid_username",
+  "password":"{{password}}"
+}
+
+
+### Nieprawidlowe haslo 
+POST {{host}}/login
+Content-Type: application/json
+
+{
+  "username":"{{username}}",
+  "password":"invalid_password"
+}
