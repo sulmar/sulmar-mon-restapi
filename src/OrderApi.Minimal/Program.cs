@@ -2,10 +2,12 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using OrderApi.Application.Contracts;
 using OrderApi.Application.DTOs;
+using OrderApi.Application.Events;
 using OrderApi.Application.UseCases;
 using OrderApi.Domain;
 using OrderApi.Infrastructure.Repositories;
 using OrderApi.Infrastructure.Services;
+using OrderApi.Minimal.BackgroundServices;
 using OrderApi.Minimal.Endpoints;
 using OrderApi.Minimal.Hubs;
 using OrderApi.Minimal.MessageHandlers;
@@ -14,6 +16,7 @@ using OrderApi.Minimal.ProblemDetails;
 using OrderApi.Minimal.Services;
 using System.Diagnostics;
 using System.Text.Json.Serialization;
+using System.Threading.Channels;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddUserSecrets<Program>();
@@ -50,7 +53,15 @@ builder.Services.AddSignalR()
 
 builder.Services.AddScoped<IOrderStatusNotifier, SignalROrderStatusNotifier>();
 
+// Rejestracja Background Service
+builder.Services.AddHostedService<TimerWorker>();
+
+builder.Services.AddHostedService<OrderProcessingWorker>();
+builder.Services.AddSingleton(Channel.CreateUnbounded<OrderPlacedEvent>());
+
 var app = builder.Build();
+
+
 
 app.UseStaticFiles();
 
