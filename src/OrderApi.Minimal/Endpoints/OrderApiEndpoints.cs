@@ -12,7 +12,7 @@ public static class OrderApiEndpoints
     {
         app.MapGet("/", () => "Hello OrderApi!");
 
-        var orders = app.MapGroup("/orders");
+        var orders = app.MapGroup("/orders").RequireAuthorization();
 
         orders.MapGet("", async (IOrderRepository repository) => await repository.GetListAsync());
         orders.MapGet("{id:guid}", async (Guid id, GetOrderHandler handler) =>
@@ -24,7 +24,7 @@ public static class OrderApiEndpoints
 
             return Results.Ok(order);
         });
-        orders.MapPost("", async (CreateOrderRequest request, CreateOrderHandler handler) =>
+        orders.MapPost("", async (CreateOrderRequest request, CreateOrderHandler handler, HttpContext context) =>
         {
             if (request.CustomerId == Guid.Empty)
                 return Results.ValidationProblem(new Dictionary<string, string[]>

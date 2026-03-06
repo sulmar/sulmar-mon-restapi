@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using OrderApi.Application.Contracts;
 using OrderApi.Application.DTOs;
 using OrderApi.Application.Events;
@@ -15,6 +17,7 @@ using OrderApi.Minimal.Middlewares;
 using OrderApi.Minimal.ProblemDetails;
 using OrderApi.Minimal.Services;
 using System.Diagnostics;
+using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Channels;
 
@@ -59,9 +62,37 @@ builder.Services.AddHostedService<TimerWorker>();
 builder.Services.AddHostedService<OrderProcessingWorker>();
 builder.Services.AddSingleton(Channel.CreateUnbounded<OrderPlacedEvent>());
 
+// TODO: Pobierz z konfiguracji
+var Issuer = "https://domain.com";
+var Audience = "https://example.com";
+var secretKey = "a-string-secret-at-least-256-bits-long";
+
+// dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = Issuer,
+
+            ValidateAudience = true,
+            ValidAudience = Audience,
+
+            ValidateIssuerSigningKey = true,
+
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+        };
+    });
+
+builder.Services.AddAuthorization();
+
+
+
 var app = builder.Build();
 
-
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseStaticFiles();
 

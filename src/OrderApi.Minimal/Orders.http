@@ -4,6 +4,8 @@
 
 @customerId = 8145d0b5-17e9-4fa4-a1bb-6207642b946b
 
+@token = eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJodHRwczovL2V4YW1wbGUuY29tIiwiaXNzIjoiaHR0cHM6Ly9kb21haW4uY29tIiwiZXhwIjoxNzcyODA5MjM0LCJqdGkiOiI1ZDU5ZjUwYS0wZGFmLTQzMWUtYWY4Yy1iMWJiNWIyN2E4NTEiLCJuYW1lIjoiam9obnkiLCJlbWFpbCI6ImpvaG55QGRvbWFpbi5jb20iLCJnaXZlbl9uYW1lIjoiSm9obnkiLCJmYW1pbHlfbmFtZSI6IldhbGtlciIsImlhdCI6MTc3MjgwODMzNSwibmJmIjoxNzcyODA4MzM1fQ.O5zyNV7RdIJBdeJ9j7MddS9J3-2YtdmwMzWBw0O4taI
+
 ### Pobierz zamowienia
 GET {{host}}/orders
 
@@ -17,7 +19,7 @@ GET {{host}}/orders/00000000-0000-0000-0000-000000000000
 POST {{host}}/orders
 Content-Type: application/json
 X-Secret-Key: 123
-Authorization: Bearer abc123
+Authorization: Bearer {{token}}
 
 {
   "CustomerId":"{{customerId}}"
