@@ -1,5 +1,4 @@
-﻿
-namespace OrderApi.Minimal.MessageHandlers;
+﻿namespace OrderApi.Minimal.MessageHandlers;
 
 public class JwtPropagationHandler(IHttpContextAccessor contextAccessor) : DelegatingHandler
 {

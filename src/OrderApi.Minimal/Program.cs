@@ -34,11 +34,16 @@ builder.Services.AddHttpClient<ICurrencyRateService, NbpApiCurrencyRateService>(
 
 
 builder.Services.AddTransient<JwtPropagationHandler>();
+builder.Services.AddTransient<CorrelationIdHandler>();
+builder.Services.AddTransient<RequestTimingHandler>();
+
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddHttpClient<IWarehouseService, WarehouseService>(client => client.BaseAddress = new Uri("https://warehouse-api"))
     .AddServiceDiscovery()
-    .AddHttpMessageHandler<JwtPropagationHandler>();
+    .AddHttpMessageHandler<JwtPropagationHandler>()
+    .AddHttpMessageHandler<CorrelationIdHandler>()
+    .AddHttpMessageHandler<RequestTimingHandler>();
 
 builder.Services.AddSignalR()
     .AddJsonProtocol(options => options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
